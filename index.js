@@ -1,35 +1,4 @@
-var db = firebase.database()
-
-class Users{
-  init(db, onChildAdded){
-    this.ref = this.app.database().ref("users")
-    this.ref.on("child_added", onChildAdded)   
-  }
-  create(){
-    const anon = {
-      id: new Date().getTime(),
-      name: "anonymous" + Math.random()
-    }
-    localStorage.setItem("roomshare-thin-id", anon.id)
-
-    this.ref.push(anon)
-    return 
-  }
-  list(){
-
-  }
-  find(id){
-
-  }
-  delete(){
-
-  }
-  update(id){
-
-  }
-}
-
-
+const db = firebase.database()
 
 var user = {
   username: "hashrock",
@@ -53,6 +22,19 @@ function move(userId, x, y){
     y: y,
     log: {}
   });
+}
+
+class User{
+  init(id){
+    this.ref = firebase.database().ref(`users`);
+    this.ref.
+    this.ref.update({
+      onlineState: true,
+    });
+    this.ref.onDisconnect().update({
+      onlineState: false,
+    });
+  }
 }
 
 
@@ -80,17 +62,20 @@ new Vue({
     say(){
       var logRef = db.ref('users/1/log');
       logRef.set("" + new Date().getTime(), "Hello")
-      // this.user.log[] = "Hello"
-      // if(this.user.log.length > 10){
-      //   this.user.log.splice(0, 1)
-      // }
     }
   },
   mounted(){
-    usersRef.on('value',  (snapshot) =>{
+    const id = localStorage.getItem("roomshare-thin-id")
+    if(id){
+      new User()
+    }else{
+
+    }
+
+    usersRef.on('value', (snapshot) =>{
       var val = snapshot.val()["0"]
       this.user = val
     });
-    
+
   }
 })
