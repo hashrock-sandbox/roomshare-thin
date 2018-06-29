@@ -15,7 +15,7 @@ new Vue({
   },
   computed:{
     filteredMessage(){
-      return this.messages.slice(-5)
+      return this.messages.slice(-10)
     }
   },
   methods:{
@@ -54,6 +54,19 @@ new Vue({
     messagesRef.limitToLast(10).on("child_added", (value)=>{
       this.messages.push(value.val())
     })
+    const app = new PIXI.Application(300, 300, {backgroundColor : 0xEEEEEE});
+    document.body.appendChild(app.view);
+    PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
+    const fav = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgAgMAAAAOFJJnAAAADFBMVEVMaXFoaHH///+xsbZ33b8HAAAAAXRSTlMAQObYZgAAADtJREFUeAFjoBiYhoaGgxmhQOAApJlBjAIggxHECEBlRK2CMiJDcTKiVhJWEwtkYFoBtx3mngNwF5IJADN2H9fK38Y8AAAAAElFTkSuQmCC";
+
+    var chr = PIXI.Sprite.fromImage(fav)
+    chr.anchor.set(0.5)
+    chr.x = 50
+    chr.y = 50
+    app.stage.scale.x = 4
+    app.stage.scale.y = 4
+    app.stage.addChild(chr)
+
 
   }
 })
