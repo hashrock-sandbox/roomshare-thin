@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+
+<body>
+  <div id="app">
+    <button @click="update()">UPD</button>
+    <button @click="move()">MOV</button>
+    <button @click="say()">SAY</button>
+
+
+    <p>
+      {{user.name}} {{user.x}} {{user.y}} 
+      <p v-for="l in user.log">{{l}}</p>
+
+    </p>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/5.2.0/firebase.js"></script>
+  <script>
+    // Initialize Firebase
+    var config = {
+      apiKey: "AIzaSyCUDmW5c3YNTkngUKv5Ib1qROPjmTmqF3o",
+      authDomain: "roomshare-global.firebaseapp.com",
+      databaseURL: "https://roomshare-global.firebaseio.com",
+      projectId: "roomshare-global",
+      storageBucket: "roomshare-global.appspot.com",
+      messagingSenderId: "163474092865"
+    };
+    firebase.initializeApp(config);
+  </script>
+  <script src="index.js"></script>
+</body>
+
+</html>
