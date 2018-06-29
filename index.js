@@ -1,4 +1,36 @@
 var db = firebase.database()
+
+class Users{
+  init(db, onChildAdded){
+    this.ref = this.app.database().ref("users")
+    this.ref.on("child_added", onChildAdded)   
+  }
+  create(){
+    const anon = {
+      id: new Date().getTime(),
+      name: "anonymous" + Math.random()
+    }
+    localStorage.setItem("roomshare-thin-id", anon.id)
+
+    this.ref.push(anon)
+    return 
+  }
+  list(){
+
+  }
+  find(id){
+
+  }
+  delete(){
+
+  }
+  update(id){
+
+  }
+}
+
+
+
 var user = {
   username: "hashrock",
   x: 0,
