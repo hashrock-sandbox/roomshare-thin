@@ -10,16 +10,24 @@
 
 <body>
   <div id="app">
-    <button @click="update()">UPD</button>
-    <button @click="move()">MOV</button>
-    <button @click="say()">SAY</button>
+    You: {{key}} / {{uid}}
+
+    <ul>
+      <li v-for="(v, k) in users">
+        {{v}}
+      </li>
+    </ul>
 
 
-    <p>
-      {{user.name}} {{user.x}} {{user.y}} 
-      <p v-for="l in user.log">{{l}}</p>
+    <ul>
+      <li v-for="(v, k) in filteredMessage">
+        {{v.uid}} {{v.message}}
+      </li>
+    </ul>
 
-    </p>
+    <form v-on:submit.prevent="sendChat">
+      <input type="text" v-model="chatMessage">
+    </form>
   </div>
   <script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script>
   <script src="https://www.gstatic.com/firebasejs/5.2.0/firebase.js"></script>

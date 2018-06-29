@@ -1,81 +1,59 @@
 const db = firebase.database()
-
-var user = {
-  username: "hashrock",
-  x: 0,
-  y: 0,
-  log: {}
-}
-
-function writeUserData(userId, name) {
-  db.ref('users/' + userId).set({
-    username: name,
-    x: 0,
-    y: 0,
-    log: {}
-  });
-}
-function move(userId, x, y){
-  db.ref('users/' + userId).set({
-    ...user, 
-    x: x,
-    y: y,
-    log: {}
-  });
-}
-
-class User{
-  init(id){
-    this.ref = firebase.database().ref(`users`);
-    this.ref.
-    this.ref.update({
-      onlineState: true,
-    });
-    this.ref.onDisconnect().update({
-      onlineState: false,
-    });
-  }
-}
-
-
-var usersRef = db.ref('users/');
+var usersRef = db.ref('users');
+var messagesRef = db.ref('messages');
 
 new Vue({
   el: "#app",
   data(){
     return {
-      user: {
-        name: "",
-        x: 0,
-        y: 0,
-        log: {}
-      }
+      key: "",
+      users: {},
+      uid: "",
+      chatMessage: "",
+      messages: []
+    }
+  },
+  computed:{
+    filteredMessage(){
+      return this.messages.slice(-5)
     }
   },
   methods:{
-    update(){
-      writeUserData("0", "hashrock")
-    },
-    move(){
-      move("0", 100, 100)
-    },
-    say(){
-      var logRef = db.ref('users/1/log');
-      logRef.set("" + new Date().getTime(), "Hello")
+    sendChat(){
+      messagesRef.push({
+        id: this.key,
+        uid: this.uid,
+        message: this.chatMessage
+      })
+      this.chatMessage = "";
     }
   },
   mounted(){
-    const id = localStorage.getItem("roomshare-thin-id")
-    if(id){
-      new User()
+    if(localStorage.getItem("roomshare-thin-uid")){
+      this.uid = localStorage.getItem("roomshare-thin-uid")
     }else{
-
+      const uid = window.prompt("Input username : ", "anonymous")
+      this.uid = uid
+      localStorage.setItem("roomshare-thin-uid", uid)
     }
 
-    usersRef.on('value', (snapshot) =>{
-      var val = snapshot.val()["0"]
-      this.user = val
-    });
+    const user = usersRef.push({
+      name: this.uid,
+      x: 0,
+      y: 0
+    })
+
+    this.key = user.key
+
+    user.onDisconnect().remove();
+
+    usersRef.on("value", (value)=>{
+      this.users = value.val();
+    })
+
+    messagesRef.limitToLast(10).on("child_added", (value)=>{
+      this.messages.push(value.val())
+    })
 
   }
 })
