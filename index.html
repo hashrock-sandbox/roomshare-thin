@@ -6,12 +6,21 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Document</title>
-  
+  <style>
+  canvas{
+    background:white;
+
+  }
+  body{
+    background: #eee;
+  }
+  </style>
 </head>
 
 <body>
   <div id="app">
     You: {{key}} / {{uid}}
+    <canvas id="canv" width="64" height="64"></canvas>
 
     <ul>
       <li v-for="(v, k) in users">
@@ -29,6 +38,8 @@
     <form v-on:submit.prevent="sendChat">
       <input type="text" v-model="chatMessage">
     </form>
+
+
   </div>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/4.7.1/pixi.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script>
@@ -44,6 +55,10 @@
       messagingSenderId: "163474092865"
     };
     firebase.initializeApp(config);
+
+
+
+
   </script>
   <script src="index.js"></script>
 </body>

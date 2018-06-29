@@ -4,7 +4,7 @@ var messagesRef = db.ref('messages');
 
 new Vue({
   el: "#app",
-  data(){
+  data() {
     return {
       key: "",
       users: {},
@@ -13,13 +13,13 @@ new Vue({
       messages: []
     }
   },
-  computed:{
-    filteredMessage(){
+  computed: {
+    filteredMessage() {
       return this.messages.slice(-10)
     }
   },
-  methods:{
-    sendChat(){
+  methods: {
+    sendChat() {
       messagesRef.push({
         id: this.key,
         uid: this.uid,
@@ -28,10 +28,10 @@ new Vue({
       this.chatMessage = "";
     }
   },
-  mounted(){
-    if(localStorage.getItem("roomshare-thin-uid")){
+  mounted() {
+    if (localStorage.getItem("roomshare-thin-uid")) {
       this.uid = localStorage.getItem("roomshare-thin-uid")
-    }else{
+    } else {
       const uid = window.prompt("Input username : ", "anonymous")
       this.uid = uid
       localStorage.setItem("roomshare-thin-uid", uid)
@@ -47,14 +47,14 @@ new Vue({
 
     user.onDisconnect().remove();
 
-    usersRef.on("value", (value)=>{
+    usersRef.on("value", (value) => {
       this.users = value.val();
     })
 
-    messagesRef.limitToLast(10).on("child_added", (value)=>{
+    messagesRef.limitToLast(10).on("child_added", (value) => {
       this.messages.push(value.val())
     })
-    const app = new PIXI.Application(300, 300, {backgroundColor : 0xEEEEEE});
+    const app = new PIXI.Application(300, 300, { backgroundColor: 0xEEEEEE });
     document.body.appendChild(app.view);
     PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
     const fav = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgAgMAAAAOFJJnAAAADFBMVEVMaXFoaHH///+xsbZ33b8HAAAAAXRSTlMAQObYZgAAADtJREFUeAFjoBiYhoaGgxmhQOAApJlBjAIggxHECEBlRK2CMiJDcTKiVhJWEwtkYFoBtx3mngNwF5IJADN2H9fK38Y8AAAAAElFTkSuQmCC";
@@ -67,6 +67,32 @@ new Vue({
     app.stage.scale.y = 4
     app.stage.addChild(chr)
 
+    var el = document.querySelector("canvas#canv")
 
+    var ctx = el.getContext("2d")
+    var pp = new Array(256).fill(1);
+    var down = false;
+
+    el.addEventListener("pointerdown", (ev) => {
+      down = true
+      el.setPointerCapture(ev.pointerId)
+    })
+    el.addEventListener("pointerup", ()=>{
+      down = false
+    })
+    el.addEventListener("pointermove", (ev) => {
+      if(!down){
+        return;
+      }
+      var x = Math.floor(ev.offsetX / 4);
+      var y = Math.floor(ev.offsetY / 4);
+      pp[y * 16 + x] = 0;
+      for (var i = 0; i < 16; i++) {
+        for (var j = 0; j < 16; j++) {
+          ctx.fillStyle = pp[j * 16 + i] === 0 ? "rgb(100, 100, 100)" : "rgb(255, 255, 255)";
+          ctx.fillRect(i * 4, j * 4, 4, 4);
+        }
+      }
+    })
   }
 })
