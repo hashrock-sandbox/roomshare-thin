@@ -1,6 +1,7 @@
 const db = firebase.database()
 var usersRef = db.ref('users');
 var messagesRef = db.ref('messages');
+var chipsRef = db.ref('chips');
 
 new Vue({
   el: "#app",
@@ -10,7 +11,11 @@ new Vue({
       users: {},
       uid: "",
       chatMessage: "",
-      messages: []
+      messages: [],
+      chips: [
+        "", "", "", "", "", "", "", "",
+        "", "", "", "", "", "", "", "",
+      ]
     }
   },
   computed: {
@@ -23,7 +28,7 @@ new Vue({
       messagesRef.push({
         id: this.key,
         uid: this.uid,
-        message: this.chatMessage
+        message: this.chatMessage,
       })
       this.chatMessage = "";
     }
@@ -73,12 +78,29 @@ new Vue({
     var pp = new Array(256).fill(1);
     var down = false;
 
+    function draw(ctx, ratio){
+      for (var i = 0; i < 16; i++) {
+        for (var j = 0; j < 16; j++) {
+          ctx.fillStyle = pp[j * 16 + i] === 0 ? "rgb(100, 100, 100)" : "rgb(255, 255, 255)";
+          ctx.fillRect(i * ratio, j * ratio, ratio, ratio);
+        }
+      }
+    }
+    db.ref('chips/' + 0).on("value", (ref)=>{
+      Vue.set(this.chips, 0, ref.val())
+    })
+
     el.addEventListener("pointerdown", (ev) => {
       down = true
       el.setPointerCapture(ev.pointerId)
     })
     el.addEventListener("pointerup", ()=>{
       down = false
+      var mycanvas = document.createElement("canvas");
+      var ctx = mycanvas.getContext("2d")
+      draw(ctx, 1);
+      var base64= mycanvas.toDataURL('image/png');
+      db.ref('chips/' + 0).set(base64)
     })
     el.addEventListener("pointermove", (ev) => {
       if(!down){
@@ -87,12 +109,7 @@ new Vue({
       var x = Math.floor(ev.offsetX / 4);
       var y = Math.floor(ev.offsetY / 4);
       pp[y * 16 + x] = 0;
-      for (var i = 0; i < 16; i++) {
-        for (var j = 0; j < 16; j++) {
-          ctx.fillStyle = pp[j * 16 + i] === 0 ? "rgb(100, 100, 100)" : "rgb(255, 255, 255)";
-          ctx.fillRect(i * 4, j * 4, 4, 4);
-        }
-      }
+      draw(ctx, 4)
     })
   }
 })
